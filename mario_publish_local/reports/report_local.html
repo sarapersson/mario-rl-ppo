@@ -1,0 +1,40 @@
+<h1>Short Report — Mario PPO (Local Training Suite)</h1>
+<p><strong>Author:</strong> Sara Persson<br />
+<strong>Date:</strong> 2025-11-16 21:39</p>
+<h2>Data preparation</h2>
+<p>Observations are derived directly from the environment (no static dataset). Each frame is converted to <strong>84x84 grayscale</strong> and we apply <strong>frame stacking</strong> (stack=2) to expose short-term temporal context.<br />
+We also use <strong>frame skip</strong> and <strong>action repeat</strong> (repeat=2) to reduce computational load and improve sample efficiency.<br />
+Reward mode is <strong>spec</strong>:
+- <strong>spec (default):</strong> +1 only when forward progress occurs within a step, and -15 on death; 0 otherwise.
+- <strong>shaped (optional):</strong> adds dense progress shaping and small step penalties.</p>
+<h2>Model choice and motivation</h2>
+<p>We use <strong>PPO (Proximal Policy Optimization)</strong> from Stable-Baselines3 with a compact CNN feature extractor.
+PPO is chosen because it is:
+- <strong>Stable and robust</strong> for on-policy training in discrete-control environments like NES Mario.
+- <strong>Well-supported</strong> with reliable implementations, monitoring, and callbacks.
+- <strong>Sample-efficient enough</strong> for short Colab runs while still converging with modest tuning.</p>
+<h2>Performance and evaluation</h2>
+<ul>
+<li><strong>Episodes:</strong> 3  </li>
+<li><strong>Total timesteps (from logs):</strong> 350  </li>
+<li><strong>Mean reward (last 20 episodes):</strong> 46.33  </li>
+<li><strong>Best single-episode reward:</strong> 120.00</li>
+</ul>
+<p>We additionally provide two evaluation utilities:
+- <strong>J:</strong> aggregate rewards over N episodes.
+- <strong>J2:</strong> reports both reward and maximum <code>x_pos</code> (how far Mario progressed).</p>
+<h2>Improvement suggestions</h2>
+<p>If performance is below target, we suggest:
+1. <strong>Longer training</strong> (increase warmup and block timesteps) and ensure GPU runtime.
+2. <strong>Curriculum</strong>: start with <code>RIGHT_ONLY</code>, then switch to <code>SIMPLE_MOVEMENT</code> once forward progress is consistent.
+3. <strong>Entropy schedule</strong>: higher entropy early, then lower (0.02 -&gt; 0.005) to solidify behaviors.
+4. <strong>Reward mode swap</strong>: try <code>shaped</code> to speed early learning, then revert to <code>spec</code> for alignment with project spec.
+5. <strong>Model capacity</strong>: modestly larger CNN (e.g., +64 filters) if learning plateaus.
+6. <strong>Frame skip/repeat</strong>: tune (e.g., skip 2–4, repeat 2) to balance fidelity and speed.</p>
+<h2>Reproducibility and artifacts</h2>
+<ul>
+<li>Notebook: <strong>Mario_RL_PPO_Local_TrainingSuite.ipynb</strong></li>
+<li>Logs and monitor CSVs under <code>/content/mario_rl_local/logs</code></li>
+<li>Exported models under <code>/content/mario_rl_local/models/exports</code></li>
+<li>Videos under <code>/content/mario_rl_local/videos</code></li>
+</ul>

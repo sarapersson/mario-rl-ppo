@@ -1,0 +1,14 @@
+numpy==1.26.4
+gymnasium==0.29.1
+gym==0.26.2
+shimmy
+nes-py==8.2.1
+gym-super-mario-bros==7.4.0
+stable-baselines3
+imageio
+imageio-ffmpeg
+moviepy
+pillow
+markdown
+pandas
+matplotlib
